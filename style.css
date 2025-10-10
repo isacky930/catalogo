@@ -1,182 +1,120 @@
-/*/* Configurações básicas e globais */
+/* --- Base Reset e Estilos Gerais --- */
 body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f2f5; /* Fundo cinza claro */
-    color: #1c1e21; /* Cor de texto principal escura */
-    line-height: 1.6;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9; /* Fundo cinza claro */
+    color: #333;
+    margin: 20px;
 }
 
-/* 1. Cabeçalho e Navegação */
-header {
-    background-color: #e50914; /* Vermelho Netflix/Cinema */
-    color: white;
-    padding: 30px 0;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-header h1 {
-    margin: 0;
-    font-size: 2.5em;
-    font-weight: 700;
-    letter-spacing: 2px;
-}
-
-nav {
-    background-color: #333;
-    padding: 10px 0;
-    text-align: center;
-}
-
-nav a {
-    color: white;
-    text-decoration: none;
-    margin: 0 20px;
-    font-weight: 600;
-    font-size: 1.1em;
-    transition: color 0.3s;
-}
-
-nav a:hover {
-    color: #e50914; /* Destaca o link ao passar o mouse */
-}
-
-/* 2. Conteúdo Principal e Container */
-#catalogo-principal {
-    width: 90%;
-    max-width: 1200px;
-    margin: 30px auto;
-    padding: 20px;
-}
-
-#catalogo-principal h2 {
-    text-align: center;
-    color: #e50914;
+h1, h2 {
+    color: #1a73e8; /* Cor azul para títulos */
     border-bottom: 2px solid #ccc;
-    padding-bottom: 10px;
-    margin-bottom: 30px;
+    padding-bottom: 5px;
+    margin-top: 30px;
 }
 
-/* 3. Cartões de Filme */
-.filme-card {
-    display: flex; /* Layout flexível para alinhar imagem e info */
-    background-color: white;
-    margin-bottom: 25px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+/* --- Estilos do Formulário de Cadastro --- */
+#cadastro-filme {
+    background-color: #fff;
     padding: 20px;
-    align-items: flex-start; /* Alinha o conteúdo ao topo */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
 }
 
-/* Imagem do Filme */
-.filme-card figure {
-    flex-shrink: 0; /* Impede a imagem de encolher */
-    margin: 0;
-    margin-right: 25px;
-    border-radius: 5px;
-    overflow: hidden;
+#cadastro-filme div {
+    margin-bottom: 15px;
 }
 
-.filme-card img {
-    width: 150px;
-    height: 225px;
+label {
     display: block;
-    object-fit: cover; /* Garante que a imagem preencha o espaço sem distorcer */
-    border-radius: 5px;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
-.filme-card figcaption {
-    font-size: 0.8em;
-    color: #666;
-    text-align: center;
-    padding-top: 5px;
-}
-
-/* Informações do Filme */
-.filme-info {
-    flex-grow: 1; /* Permite que o bloco de info ocupe o espaço restante */
-}
-
-.filme-info h3 {
-    color: #e50914;
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 1.8em;
-}
-
-.filme-info p {
-    margin: 5px 0;
-}
-
-.filme-info strong {
-    font-weight: 700;
-}
-
-.filme-info a {
-    display: inline-block;
-    margin-top: 15px;
-    padding: 8px 15px;
-    background-color: #333;
-    color: white;
-    text-decoration: none;
+input[type="text"],
+textarea {
+    width: 98%; /* Ocupa quase a largura total */
+    padding: 10px;
+    border: 1px solid #ccc;
     border-radius: 4px;
-    font-weight: 500;
+    box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+}
+
+textarea {
+    resize: vertical; /* Permite redimensionar apenas verticalmente */
+    min-height: 80px;
+}
+
+#cadastro-filme button[type="submit"] {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
     transition: background-color 0.3s;
 }
 
-.filme-info a:hover {
-    background-color: #555;
+#cadastro-filme button[type="submit"]:hover {
+    background-color: #45a049;
 }
 
-/* 4. Rodapé */
-footer {
-    background-color: #1c1e21;
-    color: #ccc;
+/* --- Estilos da Lista de Filmes --- */
+#lista-filmes {
+    display: flex; /* Para organizar os itens de filmes, se necessário */
+    flex-direction: column;
+    gap: 15px; /* Espaço entre os itens da lista */
+}
+
+.filme-item {
+    background-color: #ffffff;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-left: 5px solid #1a73e8; /* Borda lateral azul para destaque */
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.filme-item h3 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #0d47a1; /* Azul mais escuro para o título do filme */
+}
+
+.filme-item p {
+    margin-top: 0;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+/* --- Estilo do Botão de Remoção --- */
+.btn-remover {
+    align-self: flex-start; /* Alinha o botão à esquerda dentro do container flex */
+    background-color: #d9534f; /* Vermelho */
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.btn-remover:hover {
+    background-color: #c9302c;
+}
+
+/* --- Mensagem Inicial --- */
+#lista-filmes > p {
+    color: #777;
+    font-style: italic;
+    padding: 10px;
     text-align: center;
-    padding: 15px 0;
-    font-size: 0.9em;
-    margin-top: 40px;
-}
-
-footer a {
-    color: #e50914;
-    text-decoration: none;
-    margin-left: 10px;
-}
-
-footer a:hover {
-    text-decoration: underline;
-}
-
-/* 5. Responsividade (Layout para telas menores, como celulares) */
-@media (max-width: 768px) {
-    header h1 {
-        font-size: 1.8em;
-    }
-
-    nav a {
-        display: block;
-        margin: 5px 0;
-    }
-
-    .filme-card {
-        flex-direction: column; /* Empilha imagem e info em telas pequenas */
-        text-align: center;
-    }
-
-    .filme-card figure {
-        margin: 0 0 15px 0;
-        width: 100%; /* Ocupa a largura total para centralizar */
-    }
-
-    .filme-card img {
-        width: 120px;
-        height: 180px;
-    }
-
-    .filme-info {
-        text-align: left; /* Volta o texto para a esquerda, mas pode ser centralizado */
-    }
+    border: 1px dashed #ccc;
+    background-color: #fff;
+    border-radius: 4px;
 }
