@@ -1,144 +1,163 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catálogo de Filmes Fase 2: Consumo de API</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo de Filmes com Firebase e OMDb</title>
+<link rel="stylesheet" href="style.css">
+
+<!-- Firebase SDK compat -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <h1>Catálogo de Filmes</h1>
 
-  <form id="cadastro-filme">
+<h1>Catálogo de Filmes</h1>
+
+<form id="cadastro-filme">
     <h2>Adicionar Novo Filme</h2>
     <div>
-      <label for="titulo">Título do Filme: </label>
-      <input type="text" id="titulo" required>
+        <label for="titulo">Título do Filme: </label>
+        <input type="text" id="titulo" required>
     </div>
     <div>
-      <label for="sinopse">Sinopse:</label>
-      <textarea id="sinopse" required></textarea>
+        <label for="sinopse">Sinopse:</label>
+        <textarea id="sinopse" required></textarea>
     </div>
     <button type="submit">Adicionar Filme</button>
-  </form>
+</form>
 
-  <hr>
+<hr>
 
-  <h2>Minha Lista de Filmes</h2>
-  <div id="lista-filmes">
+<h2>Minha Lista de Filmes</h2>
+<div id="lista-filmes">
     <p>Nenhum filme cadastrado ainda.</p>
-  </div>
+</div>
 
-  <script>
-    const API_KEY = '37ad5a34'; // Sua chave OMDb
+<script>
+  // =========================
+  // CONFIGURAÇÃO DO FIREBASE
+  // =========================
+  const firebaseConfig = {
+    apiKey: "AIzaSyAqJGLYOn3RzLR5iCunYTPIj_ksbhQXtBc",
+    authDomain: "catalogo-filme-api.firebaseapp.com",
+    projectId: "catalogo-filme-api",
+    storageBucket: "catalogo-filme-api.firebasestorage.app",
+    messagingSenderId: "105975069751",
+    appId: "1:105975069751:web:f5d536bf3646e5558e93b2",
+    measurementId: "G-3BVMKRSJ4T"
+  };
 
-    let catalogo = [];
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const filmesCollection = db.collection("filmes");
 
-    const form = document.getElementById('cadastro-filme');
-    const listaFilmesContainer = document.getElementById('lista-filmes');
+  const API_KEY = '37ad5a34'; // OMDb API
 
-    function salvarCatalogo() {
-      localStorage.setItem('meuCatalogoFilmes', JSON.stringify(catalogo));
+  // =========================
+  // ELEMENTOS DO DOM
+  // =========================
+  const form = document.getElementById('cadastro-filme');
+  const listaFilmesContainer = document.getElementById('lista-filmes');
+
+  // =========================
+  // RENDERIZAR FILME
+  // =========================
+  function renderizarFilme(filme, id) {
+    if (listaFilmesContainer.querySelector('p')) {
+      listaFilmesContainer.innerHTML = '';
     }
 
-    function carregarCatalogo() {
-      const dadosSalvos = localStorage.getItem('meuCatalogoFilmes');
-      if (dadosSalvos) {
-        catalogo = JSON.parse(dadosSalvos);
-        catalogo.forEach((filme, indice) => renderizarFilme(filme, indice));
-      }
+    const filmeDiv = document.createElement('div');
+    filmeDiv.classList.add('filme-item');
+
+    const posterImg = document.createElement('img');
+    posterImg.src = filme.poster && filme.poster !== "N/A"
+      ? filme.poster
+      : 'https://via.placeholder.com/110x160?text=Sem+Imagem';
+    posterImg.alt = `Pôster do filme ${filme.titulo}`;
+    posterImg.classList.add('filme-poster');
+
+    const infoDiv = document.createElement('div');
+    infoDiv.classList.add('filme-info');
+
+    const tituloH3 = document.createElement('h3');
+    tituloH3.textContent = filme.titulo;
+
+    const sinopseP = document.createElement('p');
+    sinopseP.textContent = filme.sinopse;
+
+    const removerBotao = document.createElement('button');
+    removerBotao.textContent = 'Remover';
+    removerBotao.classList.add('btn-remover');
+
+    removerBotao.addEventListener('click', () => {
+      filmesCollection.doc(id).delete()
+        .then(() => {
+          filmeDiv.remove();
+        })
+        .catch(err => console.error("Erro ao remover:", err));
+    });
+
+    infoDiv.appendChild(tituloH3);
+    infoDiv.appendChild(sinopseP);
+    infoDiv.appendChild(removerBotao);
+
+    filmeDiv.appendChild(posterImg);
+    filmeDiv.appendChild(infoDiv);
+
+    listaFilmesContainer.appendChild(filmeDiv);
+  }
+
+  // =========================
+  // CARREGAR FILMES DO FIRESTORE
+  // =========================
+  filmesCollection.get().then(snapshot => {
+    snapshot.forEach(doc => renderizarFilme(doc.data(), doc.id));
+  });
+
+  // =========================
+  // ADICIONAR FILME NOVO
+  // =========================
+  form.addEventListener('submit', async (evento) => {
+    evento.preventDefault();
+
+    const tituloInput = document.getElementById('titulo').value.trim();
+    const sinopseInput = document.getElementById('sinopse').value.trim();
+
+    if (!tituloInput || !sinopseInput) {
+      alert("Digite título e sinopse do filme!");
+      return;
     }
 
-    function removerFilme(indice, elementoDOM) {
-      catalogo.splice(indice, 1);
-      elementoDOM.remove();
-      salvarCatalogo();
-      if (catalogo.length === 0) {
-        listaFilmesContainer.innerHTML = '<p>Nenhum filme cadastrado ainda.</p>';
+    let posterURL = '';
+
+    // Busca pôster na OMDb API
+    try {
+      const response = await fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&t=${encodeURIComponent(tituloInput)}`);
+      const data = await response.json();
+      if (data.Response === "True" && data.Poster && data.Poster !== "N/A") {
+        posterURL = data.Poster;
       }
+    } catch (error) {
+      console.warn("Erro ao buscar pôster na API, será usado placeholder.");
     }
 
-    function renderizarFilme(filme, indice) {
-      if (catalogo.length === 1 && !listaFilmesContainer.querySelector('.filme-item')) {
-        listaFilmesContainer.innerHTML = '';
-      }
+    const novoFilme = {
+      titulo: tituloInput,
+      sinopse: sinopseInput,
+      poster: posterURL
+    };
 
-      const filmeDiv = document.createElement('div');
-      filmeDiv.classList.add('filme-item');
+    // Salva no Firestore
+    filmesCollection.add(novoFilme)
+      .then(docRef => {
+        renderizarFilme(novoFilme, docRef.id);
+        form.reset();
+      })
+      .catch(err => console.error("Erro ao adicionar filme:", err));
+  });
+</script>
 
-      const posterImg = document.createElement('img');
-      posterImg.src = filme.poster && filme.poster !== "N/A"
-        ? filme.poster
-        : 'https://via.placeholder.com/110x160?text=Sem+Imagem';
-      posterImg.alt = `Pôster do filme ${filme.titulo}`;
-      posterImg.classList.add('filme-poster');
-
-      const infoDiv = document.createElement('div');
-      infoDiv.classList.add('filme-info');
-
-      const tituloH3 = document.createElement('h3');
-      tituloH3.textContent = filme.titulo;
-
-      const sinopseP = document.createElement('p');
-      sinopseP.textContent = filme.sinopse;
-
-      const removerBotao = document.createElement('button');
-      removerBotao.textContent = 'Remover';
-      removerBotao.classList.add('btn-remover');
-      removerBotao.addEventListener('click', () => {
-        const indiceAtual = catalogo.indexOf(filme);
-        removerFilme(indiceAtual, filmeDiv);
-      });
-
-      infoDiv.appendChild(tituloH3);
-      infoDiv.appendChild(sinopseP);
-      infoDiv.appendChild(removerBotao);
-
-      filmeDiv.appendChild(posterImg);
-      filmeDiv.appendChild(infoDiv);
-
-      listaFilmesContainer.appendChild(filmeDiv);
-    }
-
-    async function adicionarFilme(evento) {
-      evento.preventDefault();
-
-      const tituloInput = document.getElementById('titulo').value.trim();
-      const sinopseInput = document.getElementById('sinopse').value.trim();
-
-      if (!tituloInput || !sinopseInput) {
-        alert("Digite título e sinopse do filme!");
-        return;
-      }
-
-      let posterURL = '';
-
-      // Tenta buscar pôster da API OMDb
-      try {
-        const response = await fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&t=${encodeURIComponent(tituloInput)}`);
-        const data = await response.json();
-        if (data.Response === "True" && data.Poster && data.Poster !== "N/A") {
-          posterURL = data.Poster;
-        }
-      } catch (error) {
-        console.warn("Erro ao buscar pôster na API, será usado placeholder.");
-      }
-
-      const novoFilme = {
-        titulo: tituloInput,
-        sinopse: sinopseInput,
-        poster: posterURL
-      };
-
-      catalogo.push(novoFilme);
-      salvarCatalogo();
-      renderizarFilme(novoFilme, catalogo.length - 1);
-      form.reset();
-    }
-
-    form.addEventListener('submit', adicionarFilme);
-    carregarCatalogo();
-    console.log("Catálogo com sinopse manual e pôster funcionando!");
-  </script>
 </body>
 </html>
