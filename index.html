@@ -53,6 +53,7 @@
   const filmesCollection = db.collection("filmes");
 
   const API_KEY = '37ad5a34'; // OMDb API
+  let catalogo = []; // Array local de filmes
 
   // =========================
   // ELEMENTOS DO DOM
@@ -95,6 +96,11 @@
       filmesCollection.doc(id).delete()
         .then(() => {
           filmeDiv.remove();
+          // Remove também do array local
+          catalogo = catalogo.filter(f => f.id !== id);
+          if (catalogo.length === 0) {
+            listaFilmesContainer.innerHTML = '<p>Nenhum filme cadastrado ainda.</p>';
+          }
         })
         .catch(err => console.error("Erro ao remover:", err));
     });
@@ -113,7 +119,12 @@
   // CARREGAR FILMES DO FIRESTORE
   // =========================
   filmesCollection.get().then(snapshot => {
-    snapshot.forEach(doc => renderizarFilme(doc.data(), doc.id));
+    snapshot.forEach(doc => {
+      const filme = doc.data();
+      filme.id = doc.id; // salva o id do Firestore
+      catalogo.push(filme);
+      renderizarFilme(filme, doc.id);
+    });
   });
 
   // =========================
@@ -149,9 +160,10 @@
       poster: posterURL
     };
 
-    // Salva no Firestore
     filmesCollection.add(novoFilme)
       .then(docRef => {
+        novoFilme.id = docRef.id;
+        catalogo.push(novoFilme); // adiciona no array local
         renderizarFilme(novoFilme, docRef.id);
         form.reset();
       })
