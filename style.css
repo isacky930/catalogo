@@ -1,210 +1,266 @@
-/*
-====================================
-  ESTILOS GLOBAIS E TIPOGRAFIA
-====================================
-*/
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Oswald:wght@500&display=swap');
-
-:root {
-    /* Paleta de Cores */
-    --cor-principal: #3498db; /* Azul VIBRANTE */
-    --cor-secundaria: #2c3e50; /* Azul Escuro (quase preto) */
-    --cor-fundo: #ecf0f1; /* Cinza Claro (Fundo) */
-    --cor-texto: #333;
-    --cor-sucesso: #2ecc71;
-    --cor-borda: #bdc3c7;
+/* ==============================
+   ESTILO GERAL
+============================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", Arial, sans-serif;
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: var(--cor-fundo);
-    color: var(--cor-texto);
-    margin: 0;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
 }
 
-h1, h2 {
-    font-family: 'Oswald', sans-serif;
-    color: var(--cor-secundaria);
-    text-align: center;
-    margin-top: 0;
-}
-
+/* ==============================
+   TÍTULOS E SEÇÕES
+============================== */
 h1 {
-    font-size: 3em;
-    letter-spacing: 2px;
-    margin-bottom: 30px;
-    border-bottom: 4px solid var(--cor-principal);
-    padding-bottom: 10px;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #00d4ff;
+  text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
 }
 
-/*
-====================================
-  ESTILOS DO FORMULÁRIO (CADASTRO)
-====================================
-*/
-
-#cadastro-filme {
-    background-color: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 500px;
-    margin-bottom: 40px;
+h2 {
+  margin-top: 30px;
+  color: #ffffff;
+  text-align: center;
+  font-weight: 500;
+  border-bottom: 2px solid #00d4ff;
+  display: inline-block;
+  padding-bottom: 5px;
 }
 
-#cadastro-filme h2 {
-    color: var(--cor-principal);
-    border-left: 5px solid var(--cor-principal);
-    padding-left: 10px;
-    margin-bottom: 25px;
+/* ==============================
+   FORMULÁRIO DE CADASTRO
+============================== */
+form {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 25px;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+  margin-bottom: 30px;
 }
 
-#cadastro-filme div {
-    margin-bottom: 15px;
+form div {
+  margin-bottom: 15px;
 }
 
 label {
-    display: block;
-    font-weight: 700;
-    margin-bottom: 5px;
-    color: var(--cor-secundaria);
+  display: block;
+  margin-bottom: 5px;
+  color: #aeeaff;
+  font-weight: 500;
 }
 
 input[type="text"],
 textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--cor-borda);
-    border-radius: 6px;
-    box-sizing: border-box; /* Garante que o padding não aumente a largura total */
-    font-size: 1em;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-input[type="text"]:focus,
-textarea:focus {
-    border-color: var(--cor-principal);
-    box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
-    outline: none;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  font-size: 1rem;
+  color: #222;
 }
 
 textarea {
-    resize: vertical;
-    min-height: 100px;
+  resize: vertical;
+  min-height: 80px;
 }
 
-/*
-====================================
-  ESTILOS DO BOTÃO PRINCIPAL
-====================================
-*/
-
 button[type="submit"] {
-    background-color: var(--cor-principal);
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 6px;
-    font-size: 1.1em;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    width: 100%;
-    margin-top: 15px;
+  background: #00d4ff;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+  width: 100%;
 }
 
 button[type="submit"]:hover {
-    background-color: #2980b9; /* Tom mais escuro */
-    transform: translateY(-2px);
+  background: #00a0c6;
+  transform: scale(1.02);
 }
 
-/*
-====================================
-  ESTILOS DA LISTA DE FILMES
-====================================
-*/
-
-hr {
-    width: 80%;
-    border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, transparent, var(--cor-borda), transparent);
-    margin: 40px 0;
-}
-
+/* ==============================
+   LISTA DE FILMES
+============================== */
 #lista-filmes {
-    width: 100%;
-    max-width: 800px;
-    margin-top: 20px;
-}
-
-#lista-filmes > p { /* Estilo para a mensagem inicial */
-    text-align: center;
-    font-style: italic;
-    color: var(--cor-borda);
-    padding: 20px;
-    border: 1px dashed var(--cor-borda);
-    border-radius: 8px;
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .filme-item {
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 15px;
-    border-left: 6px solid var(--cor-principal);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s;
-    display: flex;
-    flex-direction: column;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
+  transition: transform 0.3s, background 0.3s;
 }
 
 .filme-item:hover {
-    transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-4px);
 }
 
 .filme-item h3 {
-    margin-top: 0;
-    color: var(--cor-secundaria);
-    font-size: 1.8em;
-    border-bottom: 1px solid var(--cor-fundo);
-    padding-bottom: 10px;
-    margin-bottom: 10px;
+  color: #00d4ff;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
 }
 
 .filme-item p {
-    font-size: 1em;
-    line-height: 1.6;
-    margin-bottom: 15px;
-    flex-grow: 1; /* Permite que o parágrafo ocupe o espaço */
+  color: #e0e0e0;
+  line-height: 1.5;
 }
 
-/*
-====================================
-  BOTÃO DE REMOÇÃO
-====================================
-*/
-
+/* ==============================
+   BOTÃO DE REMOVER
+============================== */
 .btn-remover {
-    background-color: #e74c3c; /* Vermelho */
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-size: 0.9em;
-    font-weight: 400;
-    cursor: pointer;
-    align-self: flex-end; /* Alinha o botão à direita na coluna */
-    transition: background-color 0.3s;
+  background: #ff4b4b;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-weight: bold;
+  transition: 0.3s;
 }
 
 .btn-remover:hover {
-    background-color: #c0392b; /* Tom mais escuro */
+  background: #ff2e2e;
+  transform: scale(1.05);
+}
+
+/* ==============================
+   RESPONSIVIDADE
+============================== */
+@media (max-width: 600px) {
+  body {
+    padding: 15px;
+  }
+
+  form, #lista-filmes {
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  button[type="submit"] {
+    font-size: 0.95rem;
+  }
+}
+
+/* Estilo para cada item de filme na lista */
+.filme-item {
+    display: flex; /* habilita o alinhamento lado a lado */
+    align-items: flex-start; /* alinha o conteúdo ao topo */
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* ==============================
+   POSTER DO FILME
+============================== */
+.filme-poster {
+  width: 110px;
+  height: 160px;
+  object-fit: cover;
+  margin-right: 15px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+/* ==============================
+   INFORMAÇÕES DO FILME
+============================== */
+.filme-info {
+  flex-grow: 1;
+}
+
+.filme-info h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: #e50914;
+  font-size: 1.3em;
+  letter-spacing: 0.5px;
+}
+
+.filme-info p {
+  color: #ddd;
+  font-style: normal;
+  margin-bottom: 12px;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+/* ==============================
+   BOTÃO DE REMOVER
+============================== */
+.filme-item .btn-remover {
+  background-color: #b20710;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.filme-item .btn-remover:hover {
+  background-color: #ff0a16;
+  transform: scale(1.05);
+}
+
+/* ==============================
+   AJUSTE PARA TELAS MENORES
+============================== */
+@media (max-width: 600px) {
+  .filme-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .filme-poster {
+    margin-right: 0;
+    margin-bottom: 10px;
+    width: 150px;
+    height: 210px;
+  }
+
+  .filme-info h3 {
+    font-size: 1.2em;
+  }
+
+  .filme-info p {
+    font-size: 0.9em;
+  }
 }
