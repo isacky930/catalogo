@@ -1,102 +1,210 @@
+/*
+====================================
+  ESTILOS GLOBAIS E TIPOGRAFIA
+====================================
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Oswald:wght@500&display=swap');
+
+:root {
+    /* Paleta de Cores */
+    --cor-principal: #3498db; /* Azul VIBRANTE */
+    --cor-secundaria: #2c3e50; /* Azul Escuro (quase preto) */
+    --cor-fundo: #ecf0f1; /* Cinza Claro (Fundo) */
+    --cor-texto: #333;
+    --cor-sucesso: #2ecc71;
+    --cor-borda: #bdc3c7;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background-color: #f4f4f9;
-    color: #333;
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
 }
 
 h1, h2 {
-    color: #0056b3;
-    border-bottom: 2px solid #ccc;
-    padding-bottom: 5px;
+    font-family: 'Oswald', sans-serif;
+    color: var(--cor-secundaria);
+    text-align: center;
+    margin-top: 0;
 }
 
-/* Estilo do Formulário */
+h1 {
+    font-size: 3em;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+    border-bottom: 4px solid var(--cor-principal);
+    padding-bottom: 10px;
+}
+
+/*
+====================================
+  ESTILOS DO FORMULÁRIO (CADASTRO)
+====================================
+*/
+
 #cadastro-filme {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 40px;
+}
+
+#cadastro-filme h2 {
+    color: var(--cor-principal);
+    border-left: 5px solid var(--cor-principal);
+    padding-left: 10px;
+    margin-bottom: 25px;
 }
 
 #cadastro-filme div {
     margin-bottom: 15px;
 }
 
-#cadastro-filme label {
+label {
     display: block;
-    font-weight: bold;
+    font-weight: 700;
     margin-bottom: 5px;
+    color: var(--cor-secundaria);
 }
 
-#cadastro-filme input[type="text"],
-#cadastro-filme textarea {
-    width: calc(100% - 12px); /* 100% menos o padding */
-    padding: 6px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; /* Garante que padding não estoure a largura */
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 6px;
+    box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-#cadastro-filme textarea {
-    min-height: 100px;
+input[type="text"]:focus,
+textarea:focus {
+    border-color: var(--cor-principal);
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+    outline: none;
+}
+
+textarea {
     resize: vertical;
+    min-height: 100px;
 }
 
-#cadastro-filme button[type="submit"] {
-    background-color: #28a745; /* Verde */
+/*
+====================================
+  ESTILOS DO BOTÃO PRINCIPAL
+====================================
+*/
+
+button[type="submit"] {
+    background-color: var(--cor-principal);
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    padding: 12px 25px;
+    border-radius: 6px;
+    font-size: 1.1em;
+    font-weight: 700;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s;
+    width: 100%;
+    margin-top: 15px;
 }
 
-#cadastro-filme button[type="submit"]:hover {
-    background-color: #218838;
+button[type="submit"]:hover {
+    background-color: #2980b9; /* Tom mais escuro */
+    transform: translateY(-2px);
 }
 
-/* Estilo da Lista de Filmes */
+/*
+====================================
+  ESTILOS DA LISTA DE FILMES
+====================================
+*/
+
+hr {
+    width: 80%;
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, transparent, var(--cor-borda), transparent);
+    margin: 40px 0;
+}
+
 #lista-filmes {
+    width: 100%;
+    max-width: 800px;
     margin-top: 20px;
-    padding-top: 10px;
+}
+
+#lista-filmes > p { /* Estilo para a mensagem inicial */
+    text-align: center;
+    font-style: italic;
+    color: var(--cor-borda);
+    padding: 20px;
+    border: 1px dashed var(--cor-borda);
+    border-radius: 8px;
 }
 
 .filme-item {
-    border: 1px solid #ddd;
-    padding: 15px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
     margin-bottom: 15px;
-    border-radius: 6px;
-    background-color: #ffffff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-left: 6px solid var(--cor-principal);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.filme-item:hover {
+    transform: translateY(-3px);
 }
 
 .filme-item h3 {
     margin-top: 0;
-    color: #007bff; /* Azul claro */
-    border-bottom: 1px dashed #eee;
-    padding-bottom: 5px;
+    color: var(--cor-secundaria);
+    font-size: 1.8em;
+    border-bottom: 1px solid var(--cor-fundo);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .filme-item p {
-    margin-bottom: 10px;
-    line-height: 1.4;
+    font-size: 1em;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    flex-grow: 1; /* Permite que o parágrafo ocupe o espaço */
 }
 
+/*
+====================================
+  BOTÃO DE REMOÇÃO
+====================================
+*/
+
 .btn-remover {
-    background-color: #dc3545; /* Vermelho */
+    background-color: #e74c3c; /* Vermelho */
     color: white;
     border: none;
     padding: 8px 15px;
-    border-radius: 4px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: 400;
     cursor: pointer;
-    font-size: 14px;
+    align-self: flex-end; /* Alinha o botão à direita na coluna */
     transition: background-color 0.3s;
 }
 
 .btn-remover:hover {
-    background-color: #c82333;
+    background-color: #c0392b; /* Tom mais escuro */
 }
