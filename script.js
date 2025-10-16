@@ -1,146 +1,70 @@
-// A chave que usaremos no localStorage para salvar o array
-const STORAGE_KEY = 'catalogoFilmes';
-
-// 1. CARREGAMENTO INICIAL: Tenta carregar os dados do localStorage.
-// Se não houver nada, inicializa o catálogo como um array vazio.
-let catalogo = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-
-// 2. CAPTURA DE ELEMENTOS DO DOM
-const form = document.getElementById('cadastro-filme');
 const listaFilmesContainer = document.getElementById('lista-filmes');
+const form = document.getElementById('cadastro-filme');
+const API_KEY = '37ad5a34';
 
-//------------------------------------------------------------------------------------------
-// FUNÇÕES DE PERSISTÊNCIA E LÓGICA
-//------------------------------------------------------------------------------------------
+const filmesCollection = db.collection("filmes");
 
-/**
- * Salva o array 'catalogo' atual no LocalStorage.
- */
-function salvarCatalogo() {
-    // JSON.stringify converte o array JavaScript em uma string JSON para salvar.
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogo));
-    console.log("Catálogo salvo no localStorage.");
-}
+// Renderiza todos os filmes do snapshot
+function renderizarTodosFilmes(filmes) {
+  listaFilmesContainer.innerHTML = '';
+  if(filmes.length === 0) {
+    listaFilmesContainer.innerHTML = '<p>Nenhum filme cadastrado ainda.</p>';
+    return;
+  }
 
-/**
- * Remove um filme do array de dados, do localStorage e da tela.
- * @param {number} indice O índice atual do filme no array 'catalogo'.
- * @param {HTMLElement} elementoDOM O elemento <div> do filme a ser removido da tela.
- */
-function removerFilme (indice, elementoDOM) {
-    // 1. REMOÇÃO DO ARRAY (Lógica)
-    catalogo.splice(indice, 1);
+  filmes.forEach(doc => {
+    const filme = doc.data();
+    const id = doc.id;
 
-    // 2. ATUALIZAÇÃO DO LOCALSTORAGE
-    salvarCatalogo();
-
-    // 3. REMOÇÃO DO DOM (Visual)
-    elementoDOM.remove();
-
-    // Opcional: Atualiza a mensagem se a lista estiver vazia
-    if (catalogo.length === 0) {
-        listaFilmesContainer.innerHTML = '<p>Nenhum filme cadastrado ainda.</p>';
-    }
-
-    console.log(`Filme no índice ${indice} removido. Catálogo atualizado:`, catalogo);
-}
-
-/**
- * Cria e exibe a estrutura HTML de um filme na lista.
- * @param {Object} filme O objeto {titulo, sinopse} do filme.
- */
-function renderizarFilme (filme) {
-    // Remove a mensagem inicial de "Nenhum filme cadastrado..." se ela existir
-    if (listaFilmesContainer.querySelector('p')) {
-        listaFilmesContainer.innerHTML = ''; 
-    }
-
-    // A. CRIAÇÃO DE ELEMENTOS HTML
     const filmeDiv = document.createElement('div');
-    filmeDiv.classList.add('filme-item'); 
+    filmeDiv.classList.add('filme-item');
 
-    const tituloH3 = document.createElement("h3");
-    tituloH3.textContent = filme.titulo;
+    const poster = document.createElement('img');
+    poster.src = filme.poster && filme.poster !== 'N/A' 
+                  ? filme.poster 
+                  : 'https://via.placeholder.com/110x160?text=Sem+Imagem';
+    poster.classList.add('filme-poster');
 
-    const sinopseP = document.createElement('p');
-    sinopseP.textContent = filme.sinopse;
+    const info = document.createElement('div');
+    info.classList.add('filme-info');
 
-    const removerBotao = document.createElement('button');
-    removerBotao.textContent = 'Remover';
-    removerBotao.classList.add('btn-remover');
+    const titulo = document.createElement('h3');
+    titulo.textContent = filme.titulo;
 
-    // B. DEFINIÇÃO DO EVENTO DE REMOÇÃO
-    removerBotao.addEventListener('click', () => {
-         // Encontra o índice atual do filme no array antes de remover
-         const indiceAtual = catalogo.findIndex(f => f.titulo === filme.titulo && f.sinopse === filme.sinopse);
-         if (indiceAtual !== -1) {
-             removerFilme (indiceAtual, filmeDiv);
-         }
+    const sinopse = document.createElement('p');
+    sinopse.textContent = filme.sinopse;
+
+    const btnRemover = document.createElement('button');
+    btnRemover.textContent = 'Remover';
+    btnRemover.classList.add('btn-remover');
+    btnRemover.addEventListener('click', () => {
+      filmesCollection.doc(id).delete();
     });
 
-    // C. ANEXAR ELEMENTOS
-    filmeDiv.appendChild(tituloH3);
-    filmeDiv.appendChild(sinopseP);
-    filmeDiv.appendChild(removerBotao);
-
-    // D. INSERÇÃO NO DOM FINAL
+    info.append(titulo, sinopse, btnRemover);
+    filmeDiv.append(poster, info);
     listaFilmesContainer.appendChild(filmeDiv);
+  });
 }
 
-/**
- * Lida com o envio do formulário, captura os dados e salva o filme.
- */
-function adicionarFilme (evento) {
-    evento.preventDefault();
+// Listener Firestore
+filmesCollection.orderBy('titulo').onSnapshot(snapshot => {
+  renderizarTodosFilmes(snapshot.docs);
+});
 
-    const tituloInput = document.getElementById('titulo');
-    const sinopseInput = document.getElementById('sinopse');
+// Adicionar filme
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const titulo = document.getElementById('titulo').value.trim();
+  const sinopse = document.getElementById('sinopse').value.trim();
 
-    const novoFilme = {
-        titulo: tituloInput.value,
-        sinopse: sinopseInput.value
-    };
+  let poster = '';
+  try {
+    const res = await fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&t=${encodeURIComponent(titulo)}`);
+    const data = await res.json();
+    if(data.Response === 'True' && data.Poster !== 'N/A') poster = data.Poster;
+  } catch {}
 
-    // 1. Armazena o filme no Array
-    catalogo.push (novoFilme);
-    
-    // 2. Salva o catálogo atualizado no LocalStorage
-    salvarCatalogo();
-
-    // 3. Renderiza na Tela
-    renderizarFilme (novoFilme);
-
-    // 4. Limpa o formulario
-    form.reset();
-}
-
-/**
- * Carrega todos os filmes salvos no 'catalogo' e os renderiza na tela.
- */
-function carregarFilmesSalvos() {
-    if (catalogo.length > 0) {
-        // Limpa a mensagem inicial
-        listaFilmesContainer.innerHTML = ''; 
-        
-        // Renderiza cada filme carregado do localStorage
-        catalogo.forEach((filme) => {
-            renderizarFilme(filme);
-        });
-        console.log("Catálogo carregado do localStorage com sucesso!");
-    } else {
-         // Garante que a mensagem inicial esteja presente se não houver filmes
-         listaFilmesContainer.innerHTML = '<p>Nenhum filme cadastrado ainda.</p>';
-    }
-}
-
-//------------------------------------------------------------------------------------------
-// INICIALIZAÇÃO
-//------------------------------------------------------------------------------------------
-
-// 1. Anexa a função de adicionar ao evento de 'submit' do formulário
-form.addEventListener('submit', adicionarFilme);
-
-// 2. Carrega e exibe os filmes salvos ao iniciar a página
-carregarFilmesSalvos();
-
-console.log("JavaScript Carregado. Pronto para persistência de dados!");
+  filmesCollection.add({titulo, sinopse, poster});
+  form.reset();
+});
