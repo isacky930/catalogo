@@ -135,6 +135,42 @@ form.addEventListener('submit', async (e) => {
   filmesCollection.add({titulo, sinopse, poster});
   form.reset();
 });
+// =========================
+// ADICIONAR FILME - SINOPSE AUTOMÁTICA
+// =========================
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const titulo = document.getElementById('titulo').value.trim();
+
+  if(!titulo) {
+    alert("Digite o título!");
+    return;
+  }
+
+  let sinopse = 'Sinopse não encontrada.';
+  let poster = '';
+
+  try {
+    const res = await fetch(`https://www.omdbapi.com/?apikey=${37ad5a34}&t=${encodeURIComponent(titulo)}`);
+    const data = await res.json();
+
+    if(data.Response === "True") {
+      sinopse = data.Plot || sinopse;
+      poster = data.Poster !== "N/A" ? data.Poster : '';
+    } else {
+      alert('Filme não encontrado: ${titulo}');
+      return;
+    }
+
+  } catch(err) {
+    alert("Erro ao consultar API OMDb");
+    console.warn(err);
+  }
+
+  filmesCollection.add({ titulo, sinopse, poster });
+  form.reset();
+});
+
 </script>
 
 </body>
